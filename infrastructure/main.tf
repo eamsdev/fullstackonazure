@@ -6,7 +6,7 @@ terraform {
     }
   }
 
-  required_version= "~> 1.5.3"
+  required_version = "~> 1.5.3"
 }
 
 provider "azurerm" {
@@ -39,10 +39,10 @@ resource "azurerm_linux_web_app" "webapp" {
   https_only          = true
 
   lifecycle {
-    ignore_changes = [ 
+    ignore_changes = [
       # docker image to be managed by the application's CICD pipeline
       site_config[0].application_stack[0].docker_image_name,
-     ]
+    ]
   }
 
   site_config {
@@ -50,7 +50,7 @@ resource "azurerm_linux_web_app" "webapp" {
     health_check_path = var.app_service.health_check_path
 
     application_stack {
-      docker_image_name        = "${var.docker.image}"
+      docker_image_name        = var.docker.image
       docker_registry_url      = var.docker.url
       docker_registry_username = var.docker.username
       docker_registry_password = var.docker_password

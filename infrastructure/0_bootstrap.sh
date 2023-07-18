@@ -1,4 +1,7 @@
 #!/bin/bash
+##############################################################
+# Provision resources required for storing remote state
+##############################################################
 RESOURCE_GROUP_NAME=tfstate
 STORAGE_ACCOUNT_NAME=tfstate$RANDOM
 CONTAINER_NAME=tfstate

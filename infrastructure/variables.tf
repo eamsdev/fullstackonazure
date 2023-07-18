@@ -1,5 +1,5 @@
 variable "location" {
-  type = string
+  type    = string
   default = "australiaeast"
 }
 
@@ -9,21 +9,21 @@ variable "stack_name" {
 
 variable "docker" {
   type = object({
-    image = string 
-    url = string
+    image    = string
+    url      = string
     username = string
-    port = number
+    port     = number
   })
 }
 
 variable "docker_password" {
-  type = string
+  type      = string
   sensitive = true
 }
 
 variable "app_service" {
   type = object({
-    sku_name = string
+    sku_name          = string
     health_check_path = string
   })
 }
