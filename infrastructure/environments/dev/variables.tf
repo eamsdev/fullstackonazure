@@ -7,23 +7,26 @@ variable "stack_name" {
   type = string
 }
 
-variable "docker" {
+variable "docker_registry_config" {
   type = object({
     image    = string
     url      = string
     username = string
-    port     = number
   })
 }
 
-variable "docker_password" {
-  type      = string
+variable "app_secrets" {
+  type = object({
+    docker_registry_password = string
+    db_connectionstring      = string
+  })
   sensitive = true
 }
 
-variable "app_service" {
+variable "app_config" {
   type = object({
     sku_name          = string
     health_check_path = string
+    port              = number
   })
 }
