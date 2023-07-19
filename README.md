@@ -5,15 +5,17 @@ Before getting started, you will need to have the following installed on your ma
 
 - az cli
 - terraform cli
+- Configure your backend.tfvars
+- Configure your variables.tfvars
 
 ## Getting Started
 
 1. Clone the repository to your local machine.
 2. Navigate to the terraform directory.
-3. Run `terraform init` to initialize Terraform.
-4. Run `terraform plan` to see what changes will be made to your infrastructure.
-5. Run `terraform apply` to create the infrastructure on Azure.
-6. (Optional) Run `terraform destroy` to destroy the infrastructure.
+3. Run `terraform init -backend-config=backend.tfvars` to initialize Terraform.
+4. Run `terraform plan -var-file=variables.tfvars` to see what changes will be made to your infrastructure.
+5. Run `terraform apply -var-file=variables.tfvars` to create the infrastructure on Azure.
+6. (Optional) Run `terraform destroy -var-file=variables.tfvars` to destroy the infrastructure.
 
 ## License
 
