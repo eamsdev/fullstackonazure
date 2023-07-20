@@ -7,6 +7,14 @@ variable "stack_name" {
   type = string
 }
 
+variable "dns" {
+  type = object({
+    custom_domain_verification_id = string
+  })
+  sensitive = true
+}
+
+
 variable "docker_registry_config" {
   type = object({
     image    = string
