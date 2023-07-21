@@ -4,6 +4,11 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 3.65.0"
     }
+
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.9.0"
+    }
   }
 
   required_version = "~> 1.5.3"
@@ -17,13 +22,17 @@ provider "azurerm" {
   }
 }
 
+locals {
+  suffix = "${var.stack_name}-${random_integer.ri.result}"
+}
+
 resource "random_integer" "ri" {
   min = 10000
   max = 99999
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-${var.stack_name}-${random_integer.ri.result}"
+  name     = "rg-${local.suffix}"
   location = var.location
 }
 
@@ -31,7 +40,7 @@ module "api" {
   source = "../../modules/appservice"
 
   resource_group         = azurerm_resource_group.rg
-  suffix                 = "${var.stack_name}-${random_integer.ri.result}"
+  suffix                 = "rg-${local.suffix}"
   docker_registry_config = var.docker_registry_config
   app_secrets            = var.app_secrets
   app_config             = var.app_config
