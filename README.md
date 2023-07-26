@@ -3,7 +3,7 @@
 
 Before getting started, you will need to have the following installed on your machine:
 
-- az cli
+- Azure credentials setup for terraform
 - terraform cli
 - Configure your backend.tfvars
 - Configure your variables.tfvars
