@@ -38,3 +38,11 @@ variable "app_config" {
     port              = number
   })
 }
+
+variable "database_credentials" {
+  type = object({
+    admin_username = string
+    admin_password = string
+  })
+  sensitive = true
+}

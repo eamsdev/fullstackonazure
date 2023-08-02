@@ -45,3 +45,12 @@ module "api" {
   app_secrets            = var.app_secrets
   app_config             = var.app_config
 }
+
+
+module "database" {
+  source = "../../modules/database"
+
+  suffix               = local.suffix
+  resource_group       = azurerm_resource_group.rg
+  database_credentials = var.database_credentials
+}
