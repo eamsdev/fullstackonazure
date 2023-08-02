@@ -1,4 +1,4 @@
-namespace HelloWorld;
+namespace WebApi;
 
 public class WeatherForecast
 {
