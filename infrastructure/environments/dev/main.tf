@@ -39,8 +39,8 @@ resource "azurerm_resource_group" "rg" {
 module "api" {
   source = "../../modules/appservice"
 
+  suffix                 = local.suffix
   resource_group         = azurerm_resource_group.rg
-  suffix                 = "rg-${local.suffix}"
   docker_registry_config = var.docker_registry_config
   app_secrets            = var.app_secrets
   app_config             = var.app_config
