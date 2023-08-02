@@ -36,6 +36,15 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+
+module "db" {
+  source = "../../modules/database"
+
+  suffix               = local.suffix
+  resource_group       = azurerm_resource_group.rg
+  database_credentials = var.database_credentials
+}
+
 module "api" {
   source = "../../modules/appservice"
 
@@ -47,10 +56,3 @@ module "api" {
 }
 
 
-module "database" {
-  source = "../../modules/database"
-
-  suffix               = local.suffix
-  resource_group       = azurerm_resource_group.rg
-  database_credentials = var.database_credentials
-}
