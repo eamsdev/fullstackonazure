@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "sqlsa" {
-  name                     = "sql-storage-account-${var.suffix}"
+  name                     = "sqlsa${var.suffix}"
   location                 = var.resource_group.location
   resource_group_name      = var.resource_group.name
   account_tier             = "Standard"
@@ -30,4 +30,18 @@ resource "azurerm_mssql_database_extended_auditing_policy" "auditing_policy" {
   storage_account_access_key              = azurerm_storage_account.sqlsa.primary_access_key
   storage_account_access_key_is_secondary = false
   retention_in_days                       = 6
+}
+
+resource "azurerm_mssql_firewall_rule" "mssql_firewall_internal" {
+  name             = "mssqlserver-firewall-internal"
+  server_id        = azurerm_mssql_server.mssqlserver.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
+resource "azurerm_mssql_firewall_rule" "mssql_firewall_remote" {
+  name             = "mssqlserver-firewall-remote"
+  server_id        = azurerm_mssql_server.mssqlserver.id
+  start_ip_address = var.database_remote_ip_range.start
+  end_ip_address   = var.database_remote_ip_range.end
 }

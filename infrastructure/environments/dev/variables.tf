@@ -26,7 +26,6 @@ variable "docker_registry_config" {
 variable "app_secrets" {
   type = object({
     docker_registry_password = string
-    db_connectionstring      = string
   })
   sensitive = true
 }
@@ -43,6 +42,14 @@ variable "database_credentials" {
   type = object({
     admin_username = string
     admin_password = string
+  })
+  sensitive = true
+}
+
+variable "database_remote_ip_range" {
+  type = object({
+    start = string
+    end   = string
   })
   sensitive = true
 }

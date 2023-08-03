@@ -11,8 +11,16 @@ variable "suffix" {
 
 variable "database_credentials" {
   type = object({
-    admin_username = string
-    admin_password = string
+    admin_username    = string
+    admin_password    = string
+  })
+  sensitive = true
+}
+
+variable "database_remote_ip_range" {
+  type = object({
+    start = string
+    end = string
   })
   sensitive = true
 }

@@ -20,7 +20,6 @@ variable "docker_registry_config" {
 variable "app_secrets" {
   type = object({
     docker_registry_password = string
-    db_connectionstring      = string
   })
   sensitive = true
 }
@@ -31,4 +30,9 @@ variable "app_config" {
     health_check_path = string
     port              = number
   })
+}
+
+variable "connectionstrings_database" {
+  type = string
+  sensitive = true
 }

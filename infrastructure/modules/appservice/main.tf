@@ -61,6 +61,6 @@ resource "azurerm_linux_web_app" "webapp" {
     "XDT_MicrosoftApplicationInsights_BaseExtensions" = "~1"
     "XDT_MicrosoftApplicationInsights_Mode"           = "recommended"
     "XDT_MicrosoftApplicationInsights_PreemptSdk"     = "disabled"
-    "ConnectionStrings__DbConnectionString"           = var.app_secrets.db_connectionstring
+    "ConnectionStrings__Database"                     = var.connectionstrings_database
   }
 }

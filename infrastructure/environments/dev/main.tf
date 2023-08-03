@@ -23,12 +23,13 @@ provider "azurerm" {
 }
 
 locals {
-  suffix = "${var.stack_name}-${random_integer.ri.result}"
+  suffix                     = "${var.stack_name}${random_integer.ri.result}"
+  connectionstrings_database = "Server=${module.db.azurerm_mssql_server.fully_qualified_domain_name},1433; Database=${module.db.azurerm_mssql_database.name}; User Id=${var.database_credentials.admin_username}; Password=${var.database_credentials.admin_password};"
 }
 
 resource "random_integer" "ri" {
-  min = 10000
-  max = 99999
+  min = 10
+  max = 99
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -40,19 +41,21 @@ resource "azurerm_resource_group" "rg" {
 module "db" {
   source = "../../modules/database"
 
-  suffix               = local.suffix
-  resource_group       = azurerm_resource_group.rg
-  database_credentials = var.database_credentials
+  suffix                   = local.suffix
+  resource_group           = azurerm_resource_group.rg
+  database_credentials     = var.database_credentials
+  database_remote_ip_range = var.database_remote_ip_range
 }
 
 module "api" {
   source = "../../modules/appservice"
 
-  suffix                 = local.suffix
-  resource_group         = azurerm_resource_group.rg
-  docker_registry_config = var.docker_registry_config
-  app_secrets            = var.app_secrets
-  app_config             = var.app_config
+  suffix                     = local.suffix
+  resource_group             = azurerm_resource_group.rg
+  docker_registry_config     = var.docker_registry_config
+  app_secrets                = var.app_secrets
+  app_config                 = var.app_config
+  connectionstrings_database = local.connectionstrings_database
 }
 
 
