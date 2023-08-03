@@ -23,8 +23,7 @@ provider "azurerm" {
 }
 
 locals {
-  suffix                     = "${var.stack_name}${random_integer.ri.result}"
-  connectionstrings_database = "Server=${module.db.azurerm_mssql_server.fully_qualified_domain_name},1433; Database=${module.db.azurerm_mssql_database.name}; User Id=${var.database_credentials.admin_username}; Password=${var.database_credentials.admin_password};"
+  suffix = "${var.stack_name}${random_integer.ri.result}"
 }
 
 resource "random_integer" "ri" {
@@ -55,7 +54,8 @@ module "api" {
   docker_registry_config     = var.docker_registry_config
   app_secrets                = var.app_secrets
   app_config                 = var.app_config
-  connectionstrings_database = local.connectionstrings_database
+  connectionstrings_database = "Server=${module.db.azurerm_mssql_server.fully_qualified_domain_name},1433; Database=${module.db.azurerm_mssql_database.name}; User Id=${var.database_credentials.admin_username}; Password=${var.database_credentials.admin_password};"
+  # TODO: Dont use admin credentials as connection string
 }
 
 
