@@ -1,5 +1,9 @@
 data "azurerm_client_config" "current" {}
 
+data "azuread_user" "global_admin" {
+  object_id = var.key_vault.global_admin_id
+}
+
 resource "azurerm_key_vault" "key_vault" {
   name                        = var.key_vault.vault_name
   location                    = var.resource_group.location
@@ -12,10 +16,14 @@ resource "azurerm_key_vault" "key_vault" {
   sku_name = "standard"
 }
 
-resource "azurerm_key_vault_access_policy" "pipeline_access" {
+output "test" {
+  value =  data.azurerm_client_config.current
+}
+
+resource "azurerm_key_vault_access_policy" "global_admin_access" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+  object_id    = data.azuread_user.global_admin.object_id
 
   secret_permissions  = ["Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set", ]
   key_permissions     = ["Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", ]
@@ -38,4 +46,12 @@ resource "azurerm_key_vault_secret" "secrets" {
   name         = each.value
   value        = "changeme"
   key_vault_id = azurerm_key_vault.key_vault.id
+
+  lifecycle {
+    ignore_changes = [
+      # secrets value managed manually
+      value,
+    ]
+  }
+
 }
