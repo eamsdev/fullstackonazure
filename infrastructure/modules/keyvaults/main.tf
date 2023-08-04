@@ -16,10 +16,6 @@ resource "azurerm_key_vault" "key_vault" {
   sku_name = "standard"
 }
 
-output "test" {
-  value =  data.azurerm_client_config.current
-}
-
 resource "azurerm_key_vault_access_policy" "global_admin_access" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
@@ -28,6 +24,8 @@ resource "azurerm_key_vault_access_policy" "global_admin_access" {
   secret_permissions  = ["Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set", ]
   key_permissions     = ["Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", ]
   storage_permissions = ["Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update", ]
+
+  depends_on = [azurerm_key_vault.key_vault]
 }
 
 resource "azurerm_key_vault_access_policy" "webapp_get_access" {
@@ -38,6 +36,8 @@ resource "azurerm_key_vault_access_policy" "webapp_get_access" {
   key_permissions     = ["Get"]
   secret_permissions  = ["Get"]
   storage_permissions = ["Get"]
+
+  depends_on = [azurerm_key_vault.key_vault]
 }
 
 resource "azurerm_key_vault_secret" "secrets" {
@@ -54,4 +54,8 @@ resource "azurerm_key_vault_secret" "secrets" {
     ]
   }
 
+  depends_on = [
+    azurerm_key_vault_access_policy.global_admin_access,
+    azurerm_key_vault_access_policy.webapp_get_access
+  ]
 }
