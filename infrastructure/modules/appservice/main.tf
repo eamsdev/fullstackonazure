@@ -29,6 +29,10 @@ resource "azurerm_linux_web_app" "webapp" {
   service_plan_id     = azurerm_service_plan.appserviceplan.id
   https_only          = true
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   lifecycle {
     ignore_changes = [
       # docker image to be managed by the application's CICD pipeline
@@ -61,6 +65,6 @@ resource "azurerm_linux_web_app" "webapp" {
     "XDT_MicrosoftApplicationInsights_BaseExtensions" = "~1"
     "XDT_MicrosoftApplicationInsights_Mode"           = "recommended"
     "XDT_MicrosoftApplicationInsights_PreemptSdk"     = "disabled"
-    "ConnectionStrings__Database"                     = var.connectionstrings_database
+    "ConnectionStrings__Database"                     = "@Microsoft.KeyVault(VaultName=${var.key_vault.vault_name};SecretName=${var.key_vault.vault_secret_names.dbConnectionString})"
   }
 }

@@ -32,7 +32,12 @@ variable "app_config" {
   })
 }
 
-variable "connectionstrings_database" {
-  type = string
+variable "key_vault" {
+  type = object({
+    vault_name = string
+    vault_secret_names = object({
+      dbConnectionString = string
+    })
+  })
   sensitive = true
 }

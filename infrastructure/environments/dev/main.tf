@@ -19,6 +19,11 @@ provider "azurerm" {
     resource_group {
       prevent_deletion_if_contains_resources = false
     }
+
+    key_vault {
+      purge_soft_delete_on_destroy    = true
+      recover_soft_deleted_key_vaults = true
+    }
   }
 }
 
@@ -49,13 +54,20 @@ module "db" {
 module "api" {
   source = "../../modules/appservice"
 
-  suffix                     = local.suffix
-  resource_group             = azurerm_resource_group.rg
-  docker_registry_config     = var.docker_registry_config
-  app_secrets                = var.app_secrets
-  app_config                 = var.app_config
-  connectionstrings_database = "Server=${module.db.azurerm_mssql_server.fully_qualified_domain_name},1433; Database=${module.db.azurerm_mssql_database.name}; User Id=${var.database_credentials.admin_username}; Password=${var.database_credentials.admin_password};"
-  # TODO: Dont use admin credentials as connection string
+  suffix                 = local.suffix
+  resource_group         = azurerm_resource_group.rg
+  docker_registry_config = var.docker_registry_config
+  app_secrets            = var.app_secrets
+  app_config             = var.app_config
+  key_vault              = var.key_vault
 }
 
+module "secrets" {
+  source = "../../modules/keyvaults"
+
+  suffix              = local.suffix
+  key_vault           = var.key_vault
+  webapp_principal_id = module.api.webapp.identity[0].principal_id
+  resource_group      = azurerm_resource_group.rg
+}
 

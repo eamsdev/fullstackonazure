@@ -53,3 +53,13 @@ variable "database_remote_ip_range" {
   })
   sensitive = true
 }
+
+variable "key_vault" {
+  type = object({
+    vault_name = string
+    vault_secret_names = object({
+      dbConnectionString = string
+    })
+  })
+  sensitive = true
+}
