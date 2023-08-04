@@ -10,27 +10,30 @@ resource "azurerm_key_vault" "key_vault" {
   purge_protection_enabled    = false
 
   sku_name = "standard"
+}
 
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = var.webapp_principal_id
+resource "azurerm_key_vault_access_policy" "pipeline_access" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
 
-    key_permissions = [
-      "Get",
-    ]
+  secret_permissions  = ["Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set", ]
+  key_permissions     = ["Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", ]
+  storage_permissions = ["Backup", "Delete", "DeleteSAS", "Get", "GetSAS", "List", "ListSAS", "Purge", "Recover", "RegenerateKey", "Restore", "Set", "SetSAS", "Update", ]
+}
 
-    secret_permissions = [
-      "Get",
-    ]
+resource "azurerm_key_vault_access_policy" "webapp_get_access" {
+  key_vault_id = azurerm_key_vault.key_vault.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = var.webapp_principal_id
 
-    storage_permissions = [
-      "Get",
-    ]
-  }
+  key_permissions     = ["Get"]
+  secret_permissions  = ["Get"]
+  storage_permissions = ["Get"]
 }
 
 resource "azurerm_key_vault_secret" "secrets" {
-  for_each = [ for name in var.key_vault.vault_secret_names : name]
+  for_each = toset(values(var.key_vault.vault_secret_names))
 
   name         = each.value
   value        = "changeme"

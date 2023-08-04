@@ -61,5 +61,4 @@ variable "key_vault" {
       dbConnectionString = string
     })
   })
-  sensitive = true
 }
