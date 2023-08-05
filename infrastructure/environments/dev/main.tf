@@ -22,7 +22,8 @@ provider "azurerm" {
 
     key_vault {
       purge_soft_delete_on_destroy    = true
-      recover_soft_deleted_key_vaults = true
+      recover_soft_deleted_key_vaults = false
+      recover_soft_deleted_secrets    = false
     }
   }
 }
@@ -41,6 +42,12 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
+module "frontend" {
+  source = "../../modules/staticwebapp"
+
+  suffix         = local.suffix
+  resource_group = azurerm_resource_group.rg
+}
 
 module "db" {
   source = "../../modules/database"

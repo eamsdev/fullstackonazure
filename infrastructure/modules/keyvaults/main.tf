@@ -33,9 +33,7 @@ resource "azurerm_key_vault_access_policy" "webapp_get_access" {
   tenant_id    = data.azurerm_client_config.current.tenant_id
   object_id    = var.webapp_principal_id
 
-  key_permissions     = ["Get"]
-  secret_permissions  = ["Get"]
-  storage_permissions = ["Get"]
+  secret_permissions = ["Get"]
 
   depends_on = [azurerm_key_vault.key_vault]
 }
