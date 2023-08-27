@@ -17,11 +17,7 @@ pool:
 
 steps:
 - script: |
-    terraform init  \
-      -backend-config="resource_group_name=$TF_STATE_RESOURCE_GROUP_NAME" \
-      -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
-      -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
-      -backend-config="key=$TF_STATE_BLOB_FILE"
+    terraform init -backend-config=backend.tfvars
   workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
   displayName: Terraform Init
   env:
