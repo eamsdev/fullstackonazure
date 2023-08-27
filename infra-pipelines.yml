@@ -13,7 +13,6 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
-
 steps:
 - script: |
     terraform init  \
@@ -22,14 +21,17 @@ steps:
       -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
       -backend-config="key=$TF_STATE_BLOB_FILE" \
       -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
+  workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
   displayName: Terraform Init
   
 
 - script: |
     terraform plan -out deployment.tfplan
+  workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
   displayName: Terraform Plan (ignores drift) 
 
 - script: |
     terraform apply -auto-approve deployment.tfplan
+  workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
   displayName: Terraform Apply
-      
+        
