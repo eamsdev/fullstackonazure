@@ -6,7 +6,7 @@
 trigger:
   branches:
     include:
-      - master
+      - dev
   paths:
     include:
       - infrastructure
@@ -35,10 +35,10 @@ steps:
 
   
 
-# - script: |
-#     terraform plan -out deployment.tfplan
-#   workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
-#   displayName: Terraform Plan (ignores drift) 
+- script: |
+    terraform plan -out deployment.tfplan
+  workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
+  displayName: Terraform Plan (ignores drift) 
 
 # - script: |
 #     terraform apply -auto-approve deployment.tfplan
