@@ -15,6 +15,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest 
 
+variables:
+- group: az-credentials
+
 steps:
 - script: |
     terraform init -backend-config=backend.tfvars
