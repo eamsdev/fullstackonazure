@@ -6,22 +6,14 @@
 trigger:
   branches:
     include:
-      - dev
+      - master
   paths:
     include:
-      - infrastructure
+      - infrastructure/environments/dev
+      - modules
 
 pool:
-  vmImage: ubuntu-latest
-
-variables:
-- name: branchName
-  value: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
-- name: deploymentEnvironment
-  ${{ if eq($[replace(variables['Build.SourceBranch'], 'refs/heads/', '')], 'dev')}}:
-    value: 'prod'
-  ${{ else }}:
-    value: 'dev'  
+  vmImage: ubuntu-latest 
 
 steps:
 - script: |
