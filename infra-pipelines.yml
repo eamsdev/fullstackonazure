@@ -18,7 +18,7 @@ variables:
 - name: branchName
   value: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
 - name: deploymentEnvironment
-  ${{ if $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')], 'master') }}:
+  ${{ if eq($[replace(variables['Build.SourceBranch'], 'refs/heads/', '')], 'dev')}}:
     value: 'prod'
   ${{ else }}:
     value: 'dev'  
