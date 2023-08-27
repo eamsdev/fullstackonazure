@@ -51,7 +51,6 @@ variable "database_remote_ip_range" {
     start = string
     end   = string
   })
-  sensitive = true
 }
 
 variable "key_vault" {
