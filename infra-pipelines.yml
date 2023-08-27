@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - infrastructure
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- displayName: Terraform Init
+  script: |
+    terraform init  \
+      -backend-config="resource_group_name=$TF_STATE_RESOURCE_GROUP_NAME" \
+      -backend-config="storage_account_name=$TF_STATE_BLOB_ACCOUNT_NAME" \
+      -backend-config="container_name=$TF_STATE_BLOB_CONTAINER_NAME" \
+      -backend-config="key=$TF_STATE_BLOB_FILE" \
+      -backend-config="sas_token=$TF_STATE_BLOB_SAS_TOKEN"
+  
+
+- displayName: Terraform Plan (ignores drift) 
+  script: |
+    terraform plan -out deployment.tfplan
+  
+
+- displayName: Terraform Apply
+  script: |
+    terraform apply -auto-approve deployment.tfplan
+    
+      
