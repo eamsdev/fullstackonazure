@@ -13,11 +13,21 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+
+variables:
+- name: branchName
+  value: $[replace(variables['Build.SourceBranch'], 'refs/heads/', '')]
+- name: deploymentEnvironment
+  ${{ if eq(variables['branchName'], 'dev')}}:
+    value: 'dev'
+  ${{ if eq(variables['branchName'], 'master')}}:
+    value: 'prod'  
 steps:
 - script: |
-    echo $(TF_STATE_RESOURCE_GROUP_NAME)
-  workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
-  displayName: test
+    echo $(branchName)
+
+- script: |
+    echo $(deploymentEnvironment)
 
 - script: |
     terraform init  \
@@ -33,12 +43,15 @@ steps:
     ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
     ARM_TENANT_ID: $(ARM_TENANT_ID)
 
-  
-
 - script: |
     terraform plan -out deployment.tfplan
   workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
   displayName: Terraform Plan (ignores drift) 
+  env:
+    ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+    ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+    ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+    ARM_TENANT_ID: $(ARM_TENANT_ID)
 
 # - script: |
 #     terraform apply -auto-approve deployment.tfplan
