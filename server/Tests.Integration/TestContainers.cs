@@ -2,26 +2,25 @@
 
 namespace Tests.Integration;
 
+// ReSharper disable once ClassNeverInstantiated.Global
 public sealed class TestContainer : IDisposable
 {
     private readonly IServiceScope _serviceScope;
-    
-    public HttpClient HttpClient { get; }
-    public CustomWebApplicationFactory WebApplicationFactory { get; }
-    
+    private readonly CustomWebApplicationFactory _webApplicationFactory;
+
     public TestContainer()
     {
-        WebApplicationFactory = new CustomWebApplicationFactory();
-        _serviceScope = WebApplicationFactory.Services.CreateScope();
-        HttpClient = WebApplicationFactory.CreateClient();
+        _webApplicationFactory = new CustomWebApplicationFactory();
+        _serviceScope = _webApplicationFactory.Services.CreateScope();
     }
 
     public IServiceProvider ServiceProvider => _serviceScope.ServiceProvider;
+    
+    public HttpClient CreateClient() => _webApplicationFactory.CreateClient();
 
     public void Dispose()
     {
-        HttpClient.Dispose();
         _serviceScope.Dispose();
-        WebApplicationFactory.Dispose();
+        _webApplicationFactory.Dispose();
     }
 }

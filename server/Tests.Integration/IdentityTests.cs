@@ -1,19 +1,26 @@
 ﻿using System.Net;
 using Application.Features.Identity;
+using Bogus;
 using FluentAssertions;
 using Tests.Integration.Extensions;
 using Xunit;
 
 namespace Tests.Integration;
 
-public class IdentityTests
+public class IdentityTests : IClassFixture<TestContainer>
 {
+    private readonly TestContainer _container;
+
+    public IdentityTests(TestContainer container)
+    {
+        _container = container;
+    }
+    
     [Fact]
     public async Task CanRegisterUser()
     {
         // Given
-        using var testContainer = new TestContainer();
-        var client = testContainer.HttpClient;
+        var client = _container.CreateClient();
         
         // When
         var response = await RegisterAndLoginUser(client);
@@ -26,8 +33,7 @@ public class IdentityTests
     public async Task CannotLogoutIfNotLoggedIn()
     {
         // Given
-        using var testContainer = new TestContainer();
-        var client = testContainer.HttpClient;
+        var client = _container.CreateClient();
         
         // When
         var response = await client.PostRouteAsJsonAsync("identity/logout", new LogoutUser.Command());
@@ -41,8 +47,7 @@ public class IdentityTests
     public async Task CanLogout()
     {
         // Given
-        using var testContainer = new TestContainer();
-        var client = testContainer.HttpClient;
+        var client = _container.CreateClient();
         await RegisterAndLoginUser(client);
         
         // When
@@ -56,8 +61,7 @@ public class IdentityTests
     public async Task CanGetCurrentUserIfLoggedIn()
     {
         // Given
-        using var testContainer = new TestContainer();
-        var client = testContainer.HttpClient;
+        var client = _container.CreateClient();
         await RegisterAndLoginUser(client);
         
         // When
@@ -71,8 +75,7 @@ public class IdentityTests
     public async Task CannotGetCurrentUserIfNotLoggedIn()
     {
         // Given
-        using var testContainer = new TestContainer();
-        var client = testContainer.HttpClient;
+        var client = _container.CreateClient();
         
         // When
         var response = await client.GetAsync("identity/user");
@@ -86,8 +89,7 @@ public class IdentityTests
     public async Task CannotGetCurrentUserAfterLoggedOut()
     {
         // Given
-        using var testContainer = new TestContainer();
-        var client = testContainer.HttpClient;
+        var client = _container.CreateClient();
         await RegisterAndLoginUser(client);
         await Logout(client);
         
@@ -103,8 +105,7 @@ public class IdentityTests
     public async Task CanRegisterThenLogoutThenLoginThenAccessProtectedEndpoint()
     {
         // Given
-        using var testContainer = new TestContainer();
-        var client = testContainer.HttpClient;
+        var client = _container.CreateClient();
         var user = await RegisterAndGetUser(client);
         await Logout(client);
         var loginInput = new LoginUser.Command
@@ -127,22 +128,22 @@ public class IdentityTests
     
     private static async Task<HttpResponseMessage> RegisterAndLoginUser(HttpClient client)
     {
-        var registerRequest = new RegisterUser.Command
-        {
-            Username = "SuperSecureUsername7",
-            Password = "Password_1234!!"
-        };
+        var registerRequest = new Faker<RegisterUser.Command>()
+            .StrictMode(true)
+            .RuleFor(x => x.Username, y => y.Internet.UserName())
+            .RuleFor(x => x.Password, _ => "Password_1234!!")
+            .Generate(1).Single();
         
         return await client.PostRouteAsJsonAsync("identity/register", registerRequest);
     }
     
     private static async Task<RegisterUser.Command> RegisterAndGetUser(HttpClient client)
     {
-        var registerRequest = new RegisterUser.Command
-        {
-            Username = "SuperSecureUsername7",
-            Password = "Password_1234!!"
-        };
+        var registerRequest = new Faker<RegisterUser.Command>()
+            .StrictMode(true)
+            .RuleFor(x => x.Username, y => y.Internet.UserName())
+            .RuleFor(x => x.Password, _ => "Password_1234!!")
+            .Generate(1).Single();
         
         await client.PostRouteAsJsonAsync("identity/register", registerRequest);
         return registerRequest;
