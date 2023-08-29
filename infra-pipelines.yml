@@ -43,6 +43,7 @@ steps:
     terraform apply -auto-approve deployment.tfplan
   workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
   displayName: Terraform Apply
+  disable: true
   env:
     ARM_CLIENT_ID: $(ARM_CLIENT_ID)
     ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
