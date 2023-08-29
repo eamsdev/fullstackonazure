@@ -1,3 +1,5 @@
+name: "Cloud Infrastructure Deployment Pipeline"
+
 trigger:
   branches:
     include:

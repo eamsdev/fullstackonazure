@@ -1,3 +1,5 @@
+name: "WebApi Build/Deploy Pipeline"
+
 trigger:
   branches:
     include:
