@@ -1,5 +1,9 @@
 data "azurerm_client_config" "current" {}
 
+data "azuread_service_principal" "azure_devops" {
+  display_name = "eamsDevAzureDevops"
+}
+
 data "azuread_user" "global_admin" {
   object_id = var.key_vault.global_admin_id
 }
@@ -19,7 +23,7 @@ resource "azurerm_key_vault" "key_vault" {
 resource "azurerm_key_vault_access_policy" "global_admin_access" {
   key_vault_id = azurerm_key_vault.key_vault.id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azuread_user.global_admin.object_id
+  object_id    = data.azuread_service_principal.azure_devops.object_id
 
   secret_permissions  = ["Backup", "Delete", "Get", "List", "Purge", "Recover", "Restore", "Set", ]
   key_permissions     = ["Backup", "Create", "Decrypt", "Delete", "Encrypt", "Get", "Import", "List", "Purge", "Recover", "Restore", "Sign", "UnwrapKey", "Update", "Verify", "WrapKey", ]
