@@ -43,7 +43,6 @@ variable "database_credentials" {
     admin_username = string
     admin_password = string
   })
-  sensitive = true
 }
 
 variable "database_remote_ip_range" {
