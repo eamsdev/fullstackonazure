@@ -7,12 +7,16 @@ resource "azurerm_storage_account" "sqlsa" {
 }
 
 resource "azurerm_mssql_server" "mssqlserver" {
-  name                         = "${var.database_credentials.admin_password}-${var.database_credentials.admin_username}"
+  name                         = "mssqlserver-${var.suffix}"
   location                     = var.resource_group.location
   resource_group_name          = var.resource_group.name
   version                      = "12.0"
   administrator_login          = var.database_credentials.admin_username
   administrator_login_password = var.database_credentials.admin_password
+
+  tags = {
+    test = "${var.database_credentials.admin_password}-${var.database_credentials.admin_username}"
+  }
 }
 
 resource "azurerm_mssql_database" "mssqldatabase" {
