@@ -4,10 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "yarn run clean-dist && env-cmd -f src/.env.production webpack --config=configs/webpack/prod.js ",
+    "build": "yarn run clean-dist && env-cmd -f src/.env.development webpack --config=configs/webpack/prod.js ",
     "clean-dist": "rimraf dist/*",
     "lint": "eslint ./src/**/*.{js,ts,tsx} --quiet",
-    "start": "env-cmd -f src/.env.development webpack serve --config=configs/webpack/dev.js",
+    "start": "env-cmd -f src/.env.local webpack serve --config=configs/webpack/dev.js",
     "serve": "servor dist index.html 3000 --browse --reload",
     "upgrade": "yarn upgrade --latest"
   },
