@@ -37,57 +37,56 @@ public static class DependencyInjection
                 if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
                 {
                     var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
-                    var exceptionType = exceptionHandlerFeature?.Error;
+                    var ex = exceptionHandlerFeature?.Error;
 
-                    if (exceptionType is not null)
+                    if (ex is null)
+                        return;
+                    
+                    (string Title, string Detail, int StatusCode) details = ex switch
                     {
-                        (string Title, string Detail, int StatusCode) details = exceptionType switch
+                        InvalidDomainOperationException or InvalidOperationException=>
+                        (
+                            ex.GetType().Name,
+                            ex.Message,
+                            context.Response.StatusCode = StatusCodes.Status400BadRequest
+                        ),
+                        NotFoundException =>
+                        (
+                            ex.GetType().Name,
+                            ex.Message,
+                            context.Response.StatusCode = StatusCodes.Status404NotFound
+                        ),
+                        UnauthorizedException =>
+                        (
+                            ex.GetType().Name,
+                            ex.Message,
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized
+                        ),
+                        _ =>
+                        (
+                            ex.GetType().Name,
+                            ex.Message,
+                            context.Response.StatusCode = StatusCodes.Status500InternalServerError
+                        )
+                    };
+                    
+                    var problem = new ProblemDetailsContext
+                    {
+                        HttpContext = context,
+                        ProblemDetails =
                         {
-                            InvalidDomainOperationException or InvalidOperationException=>
-                            (
-                                exceptionType.GetType().Name,
-                                exceptionType.Message,
-                                context.Response.StatusCode = StatusCodes.Status400BadRequest
-                            ),
-                            NotFoundException =>
-                            (
-                                exceptionType.GetType().Name,
-                                exceptionType.Message,
-                                context.Response.StatusCode = StatusCodes.Status404NotFound
-                            ),
-                            UnauthorizedException =>
-                            (
-                                exceptionType.GetType().Name,
-                                exceptionType.Message,
-                                context.Response.StatusCode = StatusCodes.Status401Unauthorized
-                            ),
-                            
-                            _ =>
-                            (
-                                exceptionType.GetType().Name,
-                                exceptionType.Message,
-                                context.Response.StatusCode = StatusCodes.Status500InternalServerError
-                            )
-                        };
-                        
-                        var problem = new ProblemDetailsContext
-                        {
-                            HttpContext = context,
-                            ProblemDetails =
-                            {
-                                Title = details.Title,
-                                Detail = details.Detail,
-                                Status = details.StatusCode
-                            }
-                        };
-                        
-                        if (env.IsDevelopment())
-                        {
-                            problem.ProblemDetails.Extensions.Add("exception", exceptionHandlerFeature?.Error.ToString());
+                            Title = details.Title,
+                            Detail = details.Detail,
+                            Status = details.StatusCode
                         }
-                        
-                        await problemDetailsService.WriteAsync(problem);
-                    }
+                    };
+                    
+                    if (env.IsDevelopment())
+                        problem.ProblemDetails.Extensions.Add(
+                            "exception", exceptionHandlerFeature?.Error.ToString());
+                    
+                    
+                    await problemDetailsService.WriteAsync(problem);
                 }
             });
         });
