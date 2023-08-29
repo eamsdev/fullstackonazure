@@ -1,4 +1,4 @@
-name: "Cloud Infrastructure Deployment Pipeline"
+name: "TerraformPipeline"
 
 trigger:
   branches:

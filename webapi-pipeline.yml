@@ -1,4 +1,4 @@
-name: "WebApi Build/Deploy Pipeline"
+name: "WebApiPipeline"
 
 trigger:
   branches:
