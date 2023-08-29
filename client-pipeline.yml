@@ -1,0 +1,27 @@
+name: "ClientPipeline"
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - client
+
+pool:
+  vmImage: ubuntu-latest 
+
+steps:
+- script: |
+    npm update -g npm \
+    npm install -g yarn 
+  workingDirectory: $(Build.SourcesDirectory)/client
+  displayName: Install Yarn
+
+- script: yarn install
+  workingDirectory: $(Build.SourcesDirectory)/client
+  displayName: Install Yarn Packages
+
+- script: yarn build
+  workingDirectory: $(Build.SourcesDirectory)/client
+  displayName: Build Static Assets
