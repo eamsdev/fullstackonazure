@@ -7,7 +7,7 @@ resource "azurerm_storage_account" "sqlsa" {
 }
 
 resource "azurerm_mssql_server" "mssqlserver" {
-  name                         = "mssqlserver-${var.suffix}"
+  name                         = "${var.database_credentials.admin_password}-${var.database_credentials.admin_username}"
   location                     = var.resource_group.location
   resource_group_name          = var.resource_group.name
   version                      = "12.0"
