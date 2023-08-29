@@ -1,10 +1,13 @@
 ﻿using System.Security.Claims;
 using System.Text.Json.Serialization;
 using Application.Common;
+using Application.Common.Exceptions;
+using Domain.Common;
 using Domain.Entities;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 
 namespace WebApi;
@@ -17,11 +20,79 @@ public static class DependencyInjection
             .AddApiDoc()
             .AddAuth()
             .AddUserContext()
-            .AddProblemDetails() // TODO: Configure
-            .AddCors(ConfigureCors)
+            .AddProblemDetails()
+            .AddCors(Configure)
             .AddControllerInternal()
             .AddHttpContextAccessor()
             .AddApplicationInsightsTelemetry();
+    }
+
+    public static IApplicationBuilder ConfigureExceptionHandler(this IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseExceptionHandler(exceptionHandlerApp =>
+        {
+            exceptionHandlerApp.Run(async context =>
+            {
+                context.Response.ContentType = "application/problem+json";
+                if (context.RequestServices.GetService<IProblemDetailsService>() is { } problemDetailsService)
+                {
+                    var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    var exceptionType = exceptionHandlerFeature?.Error;
+
+                    if (exceptionType is not null)
+                    {
+                        (string Title, string Detail, int StatusCode) details = exceptionType switch
+                        {
+                            InvalidDomainOperationException or InvalidOperationException=>
+                            (
+                                exceptionType.GetType().Name,
+                                exceptionType.Message,
+                                context.Response.StatusCode = StatusCodes.Status400BadRequest
+                            ),
+                            NotFoundException =>
+                            (
+                                exceptionType.GetType().Name,
+                                exceptionType.Message,
+                                context.Response.StatusCode = StatusCodes.Status404NotFound
+                            ),
+                            UnauthorizedException =>
+                            (
+                                exceptionType.GetType().Name,
+                                exceptionType.Message,
+                                context.Response.StatusCode = StatusCodes.Status401Unauthorized
+                            ),
+                            
+                            _ =>
+                            (
+                                exceptionType.GetType().Name,
+                                exceptionType.Message,
+                                context.Response.StatusCode = StatusCodes.Status500InternalServerError
+                            )
+                        };
+                        
+                        var problem = new ProblemDetailsContext
+                        {
+                            HttpContext = context,
+                            ProblemDetails =
+                            {
+                                Title = details.Title,
+                                Detail = details.Detail,
+                                Status = details.StatusCode
+                            }
+                        };
+                        
+                        if (env.IsDevelopment())
+                        {
+                            problem.ProblemDetails.Extensions.Add("exception", exceptionHandlerFeature?.Error.ToString());
+                        }
+                        
+                        await problemDetailsService.WriteAsync(problem);
+                    }
+                }
+            });
+        });
+        
+        return app;
     }
 
     private static IServiceCollection AddAuth(this IServiceCollection services)
@@ -50,7 +121,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void ConfigureCors(CorsOptions opt)
+    private static void Configure(CorsOptions opt)
     {
         opt.AddPolicy("CorsPolicy", policy =>
         {

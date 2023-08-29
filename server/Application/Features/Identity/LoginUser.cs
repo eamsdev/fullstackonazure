@@ -1,4 +1,4 @@
-﻿using System.Security.Authentication;
+﻿using Application.Common.Exceptions;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -32,7 +32,7 @@ public static class LoginUser
             var user = await _userManager.FindByNameAsync(command.Username);
             if (user is null)
             {
-                throw new AuthenticationException();
+                throw new UnauthorizedException();
             }
 
             await _signInManager.PasswordSignInAsync(user, command.Password, true, false);

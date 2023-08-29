@@ -1,4 +1,4 @@
-﻿using System.Security.Authentication;
+﻿using Application.Common.Exceptions;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -36,15 +36,11 @@ public static class RegisterUser
             
             var createResult = await _userManager.CreateAsync(user, request.Password);
             if (!createResult.Succeeded)
-            {
-                throw new AuthenticationException();
-            }
-
+                throw new UnauthorizedException();
+            
             var signInResult = await _signInManager.PasswordSignInAsync(user, request.Password, true, false);
             if (!signInResult.Succeeded)
-            {
-                throw new AuthenticationException();
-            }
+                throw new UnauthorizedException();
         }
     }
 }
