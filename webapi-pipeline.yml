@@ -1,0 +1,26 @@
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - server
+
+pool:
+  vmImage: ubuntu-latest 
+
+variables:
+- group: az-credentials
+
+steps:
+- script: dotnet build
+  workingDirectory: $(Build.SourcesDirectory)/server
+  displayName: Build Solution
+
+- script: dotnet test
+  workingDirectory: $(Build.SourcesDirectory)/server
+  displayName: Run Tests
+
+- script: docker build -t newdevpleaseignore/fullstackonazure:latest
+  workingDirectory: $(Build.SourcesDirectory)/server
+  displayName: Build Docker Image
