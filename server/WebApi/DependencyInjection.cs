@@ -137,11 +137,11 @@ public static class DependencyInjection
     private static IServiceCollection AddApiDoc(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer()
-            .AddSwaggerGen()
-            .ConfigureSwaggerGen(options =>
-            {
-                options.CustomSchemaIds(s => s.FullName?.Replace("+", "."));
-            });
+            .AddSwaggerDocument();
+            // .ConfigureSwaggerGen(options =>
+            // {
+            //     options.CustomSchemaIds(s => s.FullName?.Replace("+", "."));
+            // });
         return services;
     }
     
