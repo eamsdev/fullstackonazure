@@ -13,10 +13,6 @@ resource "azurerm_mssql_server" "mssqlserver" {
   version                      = "12.0"
   administrator_login          = var.database_credentials.admin_username
   administrator_login_password = var.database_credentials.admin_password
-
-  tags = {
-    test = "${var.database_credentials.admin_password}-${var.database_credentials.admin_username}"
-  }
 }
 
 resource "azurerm_mssql_database" "mssqldatabase" {
