@@ -1,7 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 data "azuread_service_principal" "azure_devops" {
-  display_name = "eamsDevAzureDevops"
+  display_name = var.key_vault.pipeline_sp_display_name
 }
 
 data "azuread_user" "global_admin" {

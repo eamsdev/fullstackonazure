@@ -55,8 +55,9 @@ variable "database_remote_ip_range" {
 
 variable "key_vault" {
   type = object({
-    global_admin_id = string
-    vault_name      = string
+    global_admin_id          = string
+    pipeline_sp_display_name = string
+    vault_name               = string
     vault_secret_names = object({
       dbConnectionString = string
     })

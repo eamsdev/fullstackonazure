@@ -22,6 +22,7 @@ database_remote_ip_range = {
 
 key_vault = {
   global_admin_id = "e5b33509-dcd0-4f94-851e-d69485c965e7"
+  pipeline_sp_display_name = "eamsDevAzureDevops"
   vault_name = "fullstackonazureKV"
   vault_secret_names = {
     dbConnectionString = "dbConnectionString"
