@@ -54,6 +54,16 @@ resource "azurerm_key_vault_access_policy" "webapp_get_access" {
   depends_on = [azurerm_key_vault.key_vault]
 }
 
+resource "time_sleep" "wait_access_policy" {
+  depends_on = [
+    azurerm_key_vault_access_policy.pipeline_access,
+    azurerm_key_vault_access_policy.global_admin_access,
+    azurerm_key_vault_access_policy.webapp_get_access
+  ]
+
+  create_duration = "120s"
+}
+
 resource "azurerm_key_vault_secret" "secrets" {
   for_each = toset(values(var.key_vault.vault_secret_names))
 
@@ -68,9 +78,5 @@ resource "azurerm_key_vault_secret" "secrets" {
     ]
   }
 
-  depends_on = [
-    azurerm_key_vault_access_policy.pipeline_access,
-    azurerm_key_vault_access_policy.global_admin_access,
-    azurerm_key_vault_access_policy.webapp_get_access
-  ]
+  depends_on = [time_sleep.wait_access_policy]
 }
