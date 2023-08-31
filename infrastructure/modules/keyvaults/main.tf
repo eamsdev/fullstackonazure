@@ -69,6 +69,7 @@ resource "azurerm_key_vault_secret" "secrets" {
   }
 
   depends_on = [
+    azurerm_key_vault_access_policy.pipeline_access,
     azurerm_key_vault_access_policy.global_admin_access,
     azurerm_key_vault_access_policy.webapp_get_access
   ]
