@@ -13,6 +13,7 @@ pool:
 
 variables:
 - group: az-credentials
+- group: docker-hub
 
 steps:
 - script: dotnet build
@@ -26,3 +27,12 @@ steps:
 - script: docker build . -t newdevpleaseignore/fullstackonazure:latest
   workingDirectory: $(Build.SourcesDirectory)/server
   displayName: Build Docker Image
+
+- script: docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+  workingDirectory: $(Build.SourcesDirectory)/server
+  displayName: Docker Login
+
+- script: docker image push newdevpleaseignore/fullstackonazure:latest
+  workingDirectory: $(Build.SourcesDirectory)/server
+  displayName: Docker Push
+
