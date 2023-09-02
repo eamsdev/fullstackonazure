@@ -28,7 +28,7 @@ steps:
   workingDirectory: $(Build.SourcesDirectory)/server
   displayName: Build Docker Image
 
-- script: docker login
+- script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   workingDirectory: $(Build.SourcesDirectory)/server
   displayName: Docker Login
 
