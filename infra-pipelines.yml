@@ -27,7 +27,7 @@ steps:
 - script: |
     terraform plan -var-file=variables.tfvars -out deployment.tfplan \
       -var "dns={\"custom_domain_verification_id\":\"$CUSTOM_DOMAIN_VERIFICATION_ID\"}" \
-      -var "app_secrets={\"docker_registry_password\":\"$DOCKER_REGISTRY_PASSWORD\"}" \
+      -var "app_secrets={\"docker_registry_password\":\"test"}" \
       -var "database_credentials={\"admin_username\":\"$DB_ADMIN_USERNAME\", \"admin_password\":\"$DB_ADMIN_PASSWORD\"}"
   workingDirectory: $(Build.SourcesDirectory)/infrastructure/environments/dev
   displayName: Terraform Plan (ignores drift) 
