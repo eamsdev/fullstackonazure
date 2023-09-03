@@ -13,7 +13,8 @@ builder.Services
     .AddWebServices()
     .AddInfrastructureServices(builder.Configuration)
     .AddApplicationServices()
-    .AddDomainServices();
+    .AddDomainServices()
+    .AddHealthChecks();
 
 var app = builder.Build();
 
@@ -36,6 +37,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseExceptionHandler();
 app.MapControllers().RequireAuthorization();
+app.MapHealthChecks("/health");
 app.Run();
 
 namespace WebApi
