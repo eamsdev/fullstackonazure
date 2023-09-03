@@ -4,7 +4,7 @@ stack_name = "fullstackonazure"
 
 # App Service
 docker_registry_config = {
-  image = "newdevpleaseignore/hello-world-api-dotnet:latest"
+  image = "newdevpleaseignore/fullstackonazure:latest"
   url = "https://index.docker.io"
   username = "newdevpleaseignore"
 }
