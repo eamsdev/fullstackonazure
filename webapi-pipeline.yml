@@ -24,7 +24,7 @@ steps:
   workingDirectory: $(Build.SourcesDirectory)/server
   displayName: Run Tests
 
-- script: docker build . -t newdevpleaseignore/fullstackonazure:$(Rev:r) -t newdevpleaseignore/fullstackonazure:latest
+- script: docker build . -t "newdevpleaseignore/fullstackonazure:$(Rev:r)" -t newdevpleaseignore/fullstackonazure:latest
   workingDirectory: $(Build.SourcesDirectory)/server
   displayName: Build Docker Image
 
