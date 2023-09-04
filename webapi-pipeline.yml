@@ -37,7 +37,7 @@ steps:
   workingDirectory: $(Build.SourcesDirectory)/server
   displayName: Docker Push
 
-- script: az webapp config container set --name $WebAppName --resource-group $WebAppResourceGroup --docker-custom-image-name "newdevpleaseignore/fullstackonazure:$(Build.BuildNumber)"
+- script: az webapp config container set --docker-custom-image-name "newdevpleaseignore/fullstackonazure:$(Build.BuildNumber)" --name $WebAppName --resource-group $WebAppResourceGroup 
   displayName: Deploy image to azure webapp
   env:
     ARM_CLIENT_ID: $(ARM_CLIENT_ID)
