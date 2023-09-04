@@ -27,12 +27,7 @@ provider "azurerm" {
 }
 
 locals {
-  suffix = "${var.stack_name}${random_integer.ri.result}"
-}
-
-resource "random_integer" "ri" {
-  min = 10
-  max = 99
+  suffix = "${var.stack_name}"
 }
 
 resource "azurerm_resource_group" "rg" {
