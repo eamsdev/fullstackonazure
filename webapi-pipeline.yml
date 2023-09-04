@@ -38,12 +38,12 @@ steps:
   displayName: Docker Push
 
 - script: az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
-  displayName: Deploy image to azure webapp
+  displayName: Login to Azure using the AzureDevOps Service Principle
   env:
     ARM_CLIENT_ID: $(ARM_CLIENT_ID)
     ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
     ARM_TENANT_ID: $(ARM_TENANT_ID)
 
 - script: az webapp config container set --docker-custom-image-name "newdevpleaseignore/fullstackonazure:$(Build.BuildNumber)" --name $(WebAppName) --resource-group $(WebAppResourceGroup) 
-  displayName: Deploy image to azure webapp
+  displayName: Deploy image to Azure Webapp
   
