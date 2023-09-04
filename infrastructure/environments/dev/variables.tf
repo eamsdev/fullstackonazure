@@ -1,6 +1,6 @@
 variable "location" {
   type    = string
-  default = "australiaeast"
+  default = "australiasoutheast"
 }
 
 variable "stack_name" {
