@@ -39,4 +39,9 @@ steps:
 
 - script: az webapp config container set --name $WebAppName --resource-group $WebAppResourceGroup --docker-custom-image-name "newdevpleaseignore/fullstackonazure:$(Build.BuildNumber)"
   displayName: Deploy image to azure webapp
+  env:
+    ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+    ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+    ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+    ARM_TENANT_ID: $(ARM_TENANT_ID)
   
