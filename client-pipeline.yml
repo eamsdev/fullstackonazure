@@ -33,3 +33,7 @@ steps:
     ARM_CLIENT_ID: $(ARM_CLIENT_ID)
     ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
     ARM_TENANT_ID: $(ARM_TENANT_ID)
+
+- script: az storage blob upload-batch -s ./dist -d '$web' --account-name $(SpaStorageAccountName) --overwrite=true
+  workingDirectory: $(Build.SourcesDirectory)/client
+  displayName: Copy static assets to Storage Account
