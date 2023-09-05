@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "static_website_storage" {
-  name                     = "${var.suffix}"
+  name                     = "blob-${var.suffix}"
   location                 = var.resource_group.location
   resource_group_name      = var.resource_group.name
   account_replication_type = "LRS"
