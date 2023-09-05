@@ -6,6 +6,9 @@ trigger:
     include:
       - client
 
+variables:
+- group: az-credentials
+
 pool:
   vmImage: ubuntu-latest 
 
@@ -23,3 +26,10 @@ steps:
 - script: yarn build
   workingDirectory: $(Build.SourcesDirectory)/client
   displayName: Build Static Assets
+
+- script: az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+  displayName: Login to Azure using the AzureDevOps Service Principle
+  env:
+    ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+    ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+    ARM_TENANT_ID: $(ARM_TENANT_ID)
